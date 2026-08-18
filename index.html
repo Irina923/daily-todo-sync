@@ -18,10 +18,11 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{font-family:var(--sans);color:var(--ink);background:var(--bg);min-height:100vh;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1160px;margin:0 auto;padding:26px 22px 60px;display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start;}
+  .wrap{max-width:1160px;margin:0 auto;padding:26px 22px 60px;display:grid;grid-template-columns:300px 1fr;grid-template-areas:"date main" "side main";gap:24px;align-items:start;}
+  .left-top{grid-area:date;display:flex;flex-direction:column;gap:14px;}
 
   /* ===== 左侧 sidebar ===== */
-  .sidebar{display:flex;flex-direction:column;gap:16px;position:sticky;top:26px;}
+  .sidebar{display:flex;flex-direction:column;gap:16px;grid-area:side;}
   .brand{padding:2px 4px;}
   .brand-title{font-size:20px;font-weight:700;letter-spacing:.5px;}
   .brand-sub{font-size:12.5px;color:var(--ink-faint);margin-top:5px;line-height:1.6;}
@@ -50,7 +51,7 @@
   .alm-note{font-size:11px;color:var(--ink-faint);margin-top:12px;line-height:1.6;border-top:1px dashed var(--line);padding-top:10px;}
 
   /* ===== 右侧 main ===== */
-  .main{min-width:0;}
+  .main{min-width:0;grid-area:main;}
   .main-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap;}
   .mnav{display:flex;align-items:center;gap:10px;}
   .marrow{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink-soft);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;}
@@ -176,22 +177,58 @@
 
   .hidden{display:none !important;}
   @media (max-width:880px){
-    .wrap{grid-template-columns:1fr;gap:18px;padding:18px 14px 50px;}
-    .sidebar{position:static;flex-direction:column;}
-    .mtitle{min-width:110px;font-size:16px;}
-    .main-card{min-height:auto;}
+    .wrap{display:flex;flex-direction:column;gap:16px;padding:16px 12px 48px;}
+    .left-top{order:1;}
+    .main{order:2;}
+    .sidebar{order:3;}
+    .brand{padding:0 2px 2px;}
+    .brand-title{font-size:18px;}
+    .brand-sub{font-size:11.5px;}
+    .date-card{padding:16px 18px;}
+    .dc-date{font-size:38px;}
+    .main-head{gap:10px;margin-bottom:12px;}
+    .mnav{flex:1;}
+    .mtitle{min-width:0;font-size:16px;flex:1;text-align:left;}
+    .mtools{width:100%;gap:8px;}
+    .view-switch{flex:1;}
+    .view-switch button{flex:1;text-align:center;padding:8px 4px;}
+    .main-card{min-height:auto;padding:14px;border-radius:14px;}
+    .section-title .meta{display:none;}
+    .add-row{flex-wrap:wrap;}
+    .add-row input{flex:1 1 100%;}
+    .add-row .cat-sel{flex:1;padding:11px 10px;}
+    .add-row button{flex:1;padding:12px 20px;}
+    /* 月历：保留 7 列，紧凑化 */
+    .cal-grid{gap:5px;}
+    .cal-dow{font-size:11px;}
+    .cal-cell{min-height:82px;padding:6px 5px 5px;border-radius:11px;}
+    .cell-num{font-size:13px;}
+    .cell-lun{font-size:9px;margin-top:2px;}
+    .cell-items{gap:3px;margin-top:5px;}
+    .ci{font-size:9.5px;padding:3px 4px;border-radius:6px;gap:4px;}
+    .cal-grid .ci-cat{display:none;}
+    .cell-add{width:18px;height:18px;font-size:11px;border-radius:6px;}
+    .ci-more{font-size:9.5px;}
+    /* 周历：横向滑动查看 7 天 */
+    .cal-week{display:flex;overflow-x:auto;gap:8px;padding-bottom:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;}
+    .cal-week .cal-cell{min-width:148px;min-height:auto;scroll-snap-align:start;}
+    /* 清单 */
+    .day-head{top:0;}
+    .todo-item{padding:13px 4px;}
   }
 </style>
 </head>
 <body>
 <div class="wrap">
   <!-- 左侧边栏 -->
-  <aside class="sidebar">
+  <div class="left-top">
     <div class="brand">
       <div class="brand-title">日常 · 每日待办</div>
       <div class="brand-sub">工作、家庭与生活，一处记录，随时切换。</div>
     </div>
     <div class="date-card" id="dateCard"></div>
+  </div>
+  <aside class="sidebar">
     <div class="side-block">
       <div class="sb-title">分类标签</div>
       <div class="cat-list" id="catList"></div>
