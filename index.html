@@ -86,6 +86,12 @@
   .add-row button:hover{background:var(--accent-deep);}
 
   .todo-list{padding:2px 2px 8px;}
+  .day-group{margin-bottom:14px;}
+  .day-group:last-child{margin-bottom:0;}
+  .day-head{display:flex;align-items:center;gap:10px;padding:6px 10px;margin:4px 0 2px;position:sticky;top:0;background:var(--bg-card);z-index:2;}
+  .day-d{font-size:14px;font-weight:700;color:var(--ink);}
+  .day-w{font-size:12px;color:var(--ink-faint);}
+  .day-cnt{margin-left:auto;font-size:11.5px;color:var(--ink-faint);background:var(--line-soft);padding:2px 9px;border-radius:20px;}
   .todo-item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-radius:12px;transition:.15s;}
   .todo-item:hover{background:var(--line-soft);}
   .todo-item + .todo-item{border-top:1px solid var(--line);border-radius:0;}
@@ -425,6 +431,14 @@ function clearDone(key){
   const list=getAllForDay(key).map(t=>{ if(t.done){t.deleted=true; stamp(t);} return t; });
   saveDayTodos(key,list); afterMutate(); render();
 }
+function clearDoneAll(){
+  const all=loadAll();
+  Object.keys(all).forEach(key=>{
+    const list=getAllForDay(key).map(t=>{ if(t.done){t.deleted=true; stamp(t);} return t; });
+    saveDayTodos(key,list);
+  });
+  afterMutate(); render();
+}
 
 /* ===== 黄历 ===== */
 function renderAlmanac(d){
@@ -519,15 +533,38 @@ function renderFilterBar(){
   }).join("");
 }
 function renderList(){
-  const key=fmtKey(selected);
-  let list=getDayTodos(key);
-  if(filterCat!=="all") list=list.filter(t=>t.cat===filterCat);
-  const done=list.filter(t=>t.done).length, total=list.length, pct=total?Math.round(done/total*100):0;
-  $("#listTitle").textContent=isSameDay(selected,new Date())?"今日待办":"当日待办";
-  $("#listMeta").textContent=fmtKey(selected).slice(5);
-  $("#footStat").textContent=total?`共 ${total} 项 · 已完成 ${done} 项`:"";
+  const all=loadAll();
+  const groups=[];
+  Object.keys(all).sort().forEach(key=>{
+    let items=(all[key]||[]).filter(t=>!t.deleted);
+    if(filterCat!=="all") items=items.filter(t=>t.cat===filterCat);
+    if(!items.length) return;
+    const p=key.split("-"); const date=new Date(+p[0],+p[1]-1,+p[2]);
+    items.sort((a,b)=>(a.done?1:0)-(b.done?1:0)|| ((a.createdAt||0)-(b.createdAt||0)));
+    groups.push({key,date,items});
+  });
+  groups.sort((a,b)=>a.date-b.date);
+  const total=groups.reduce((s,g)=>s+g.items.length,0);
+  const done=groups.reduce((s,g)=>s+g.items.filter(t=>t.done).length,0);
+  const pct=total?Math.round(done/total*100):0;
+  $("#listTitle").textContent="待办清单";
+  $("#listMeta").textContent= total? `${total} 项 · 已完成 ${done} 项` : "";
+  $("#footStat").textContent= total? `共 ${total} 项 · 已完成 ${done} 项` : "";
   $("#progress").firstElementChild.style.width=pct+"%";
-  $("#todoList").innerHTML=buildTodoHTML(list,key);
+  if(!groups.length){
+    $("#todoList").innerHTML=`<div class="empty"><div class="big">☘</div>还没有任何待办<br>在下方或日历里点「＋」添加</div>`;
+    return;
+  }
+  $("#todoList").innerHTML=groups.map(g=>{
+    const m=g.date.getMonth()+1, d=g.date.getDate();
+    const w=WEEK_CN[g.date.getDay()];
+    const isT=isSameDay(g.date,new Date());
+    const cnt=g.items.length, dc=g.items.filter(t=>t.done).length;
+    return `<div class="day-group">
+      <div class="day-head"><span class="day-d">${m}月${d}日</span><span class="day-w">周${w}${isT?" · 今天":""}</span><span class="day-cnt">${dc}/${cnt}</span></div>
+      ${buildTodoHTML(g.items,g.key)}
+    </div>`;
+  }).join("");
 }
 
 /* ===== 左侧 sidebar 渲染 ===== */
@@ -683,9 +720,9 @@ $("#viewSwitch").addEventListener("click",e=>{
   [...$("#viewSwitch").children].forEach(x=>x.classList.toggle("active",x===b));
   render();
 });
-$("#addBtn").addEventListener("click",()=>{ addTodo($("#todoInput").value,fmtKey(selected),$("#catSel").value); $("#todoInput").value=""; $("#todoInput").focus(); });
-$("#todoInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){ addTodo($("#todoInput").value,fmtKey(selected),$("#catSel").value); $("#todoInput").value=""; }});
-$("#clearDone").addEventListener("click",()=>clearDone(fmtKey(selected)));
+$("#addBtn").addEventListener("click",()=>{ addTodo($("#todoInput").value,fmtKey(new Date()),$("#catSel").value); $("#todoInput").value=""; $("#todoInput").focus(); });
+$("#todoInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){ addTodo($("#todoInput").value,fmtKey(new Date()),$("#catSel").value); $("#todoInput").value=""; }});
+$("#clearDone").addEventListener("click",()=>clearDoneAll());
 $("#filterBar").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return; filterCat=b.dataset.cat; renderFilterBar(); render(); });
 $("#catList").addEventListener("click",e=>{ const r=e.target.closest(".cat-row"); if(!r) return; filterCat=r.dataset.cat; renderFilterBar(); if(viewMode!=="list"){ viewMode="list"; [...$("#viewSwitch").children].forEach(x=>x.classList.toggle("active",x.dataset.view==="list")); } render(); });
 $("#addQuickBtn").addEventListener("click",()=>{
