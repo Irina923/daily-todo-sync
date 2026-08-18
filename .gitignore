@@ -1,0 +1,4 @@
+node_modules/
+data/todos.json
+*.log
+.DS_Store

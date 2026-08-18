@@ -1,0 +1,18 @@
+# Render Blueprint 部署声明
+# 在 Render 控制台选择 New -> Blueprint，连接本仓库后自动读取此文件完成部署
+services:
+  - type: web
+    name: daily-todo-sync
+    runtime: node
+    region: singapore          # 离中国最近的区域，延迟最低
+    plan: free                 # 免费计划；闲置 15 分钟会休眠，下次访问自动唤醒（约 15~30s）
+    branch: main               # 改成你的默认分支名（如 master）
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    healthCheckPath: "/health" # server.js 已提供 /health 健康检查
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # 如需持久磁盘（避免重新部署丢数据），在 Render 挂载 Disk 到 /data 后取消下行注释：
+      # - key: DATA_DIR
+      #   value: /data
