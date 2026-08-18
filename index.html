@@ -6,67 +6,68 @@
 <title>每日待办 · 我的日程本</title>
 <style>
   :root{
-    --bg:#f4f5f7; --card:#ffffff; --ink:#2b2b2e; --ink-soft:#71737a; --ink-faint:#a9abb2;
-    --line:#ececef; --line-soft:#f3f3f5;
-    --accent:#54a07d; --accent-deep:#3f7d5f; --accent-soft:#eef6f1;
-    --warn:#e0685f; --warn-soft:#fdeeed; --gold:#c79a4e;
-    --green:#3f9d72; --red:#e0685f;
-    --shadow:0 1px 3px rgba(20,20,40,.04), 0 8px 24px rgba(20,20,40,.05);
-    --radius:18px;
+    --bg:#f6f7f9; --card:#ffffff; --ink:#2c2c2e; --ink-soft:#6e6e73; --ink-faint:#a1a1a6;
+    --line:#e5e5ea; --line-soft:#f2f2f7;
+    --accent:#5cb68c; --accent-deep:#4a9a73; --accent-soft:#eef7f2;
+    --warn:#e06c6c; --warn-soft:#fff0f0;
+    --gold:#d4a84b;
+    --shadow:0 2px 8px rgba(20,20,40,.04), 0 12px 28px rgba(20,20,40,.05);
+    --radius:20px;
     --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{font-family:var(--sans);color:var(--ink);background:var(--bg);min-height:100vh;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1160px;margin:0 auto;padding:26px 22px 60px;display:grid;grid-template-columns:300px 1fr;grid-template-areas:"date main" "side main";gap:24px;align-items:start;}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 24px 70px;display:grid;grid-template-columns:280px 1fr;grid-template-areas:"date main" "side main";gap:22px;align-items:start;}
   .left-top{grid-area:date;display:flex;flex-direction:column;gap:14px;}
 
   /* ===== 左侧 sidebar ===== */
-  .sidebar{display:flex;flex-direction:column;gap:16px;grid-area:side;}
+  .sidebar{display:flex;flex-direction:column;gap:14px;grid-area:side;}
   .brand{padding:2px 4px;}
-  .brand-title{font-size:20px;font-weight:700;letter-spacing:.5px;}
-  .brand-sub{font-size:12.5px;color:var(--ink-faint);margin-top:5px;line-height:1.6;}
+  .brand-title{font-size:20px;font-weight:700;letter-spacing:.5px;color:var(--ink);}
+  .brand-sub{font-size:12px;color:var(--ink-faint);margin-top:5px;line-height:1.6;}
 
-  .date-card{background:linear-gradient(160deg,#eef6f1 0%, #e4f1ea 100%);border:1px solid #dcebe2;border-radius:var(--radius);padding:20px 22px;}
-  .dc-date{font-size:46px;font-weight:700;line-height:1;color:var(--accent-deep);letter-spacing:1px;}
-  .dc-info{font-size:13.5px;color:var(--ink-soft);margin-top:10px;}
-  .dc-lunar{font-size:12.5px;color:#7fa890;margin-top:4px;}
+  .date-card{background:linear-gradient(160deg,#eaf6ef 0%, #e0f2ea 100%);border:1px solid #d8ece2;border-radius:var(--radius);padding:22px 22px 20px;}
+  .dc-date{font-size:52px;font-weight:700;line-height:1;color:var(--accent-deep);letter-spacing:-1px;}
+  .dc-info{font-size:13.5px;color:var(--ink-soft);margin-top:8px;}
+  .dc-lunar{font-size:12.5px;color:#7da88e;margin-top:3px;}
 
   .side-block{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);}
   .sb-title{font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:12px;letter-spacing:.5px;}
 
-  .cat-list{display:flex;flex-direction:column;gap:2px;}
-  .cat-row{display:flex;align-items:center;gap:10px;padding:8px 4px;border-radius:10px;cursor:pointer;transition:.15s;}
+  .cat-list{display:flex;flex-direction:column;gap:4px;}
+  .cat-row{display:flex;align-items:center;gap:10px;padding:9px 5px;border-radius:12px;cursor:pointer;transition:.15s;}
   .cat-row:hover{background:var(--line-soft);}
-  .cat-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;}
+  .cat-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;}
   .cat-name{font-size:14px;color:var(--ink);flex:1;}
-  .cat-num{font-size:13px;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
+  .cat-num{font-size:13px;color:var(--ink-faint);font-variant-numeric:tabular-nums;min-width:18px;text-align:right;}
 
-  .alm-box{font-size:13px;line-height:1.7;color:var(--ink-soft);}
-  .alm-box .yi{color:var(--green);}
-  .alm-box .ji{color:var(--red);}
-  .alm-row{display:flex;gap:10px;padding:5px 0;border-top:1px dashed var(--line);}
-  .alm-row:first-child{border-top:0;}
-  .alm-k{color:var(--ink-faint);width:30px;flex:0 0 auto;font-weight:600;}
-  .alm-note{font-size:11px;color:var(--ink-faint);margin-top:12px;line-height:1.6;border-top:1px dashed var(--line);padding-top:10px;}
+  .alm-box{font-size:13px;line-height:1.85;color:var(--ink-soft);}
+  .alm-row{display:flex;gap:10px;align-items:flex-start;}
+  .alm-k{width:24px;flex:0 0 auto;font-weight:600;}
+  .alm-k.yi{color:var(--accent-deep);}
+  .alm-k.ji{color:var(--warn);}
+  .yi-text{color:var(--ink-soft);}
+  .ji-text{color:var(--ink-soft);}
 
   /* ===== 右侧 main ===== */
   .main{min-width:0;grid-area:main;}
-  .main-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap;}
-  .mnav{display:flex;align-items:center;gap:10px;}
+  .main-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:nowrap;}
+  .mnav{display:flex;align-items:center;gap:10px;flex:1;}
   .marrow{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink-soft);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;}
   .marrow:hover{border-color:var(--accent);color:var(--accent-deep);}
-  .mtitle{font-size:18px;font-weight:600;min-width:130px;text-align:center;}
-  .mtools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .btn-ghost{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);padding:9px 16px;border-radius:999px;font-size:13px;cursor:pointer;transition:.15s;font-family:var(--sans);}
+  .mtitle{font-size:17px;font-weight:600;color:var(--ink);min-width:120px;text-align:center;}
+  .mtools{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;}
+  .btn-ghost{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);padding:8px 16px;border-radius:999px;font-size:13px;cursor:pointer;transition:.15s;font-family:var(--sans);}
   .btn-ghost:hover{border-color:var(--accent);color:var(--accent-deep);}
-  .btn-primary{border:0;background:var(--accent);color:#fff;padding:9px 18px;border-radius:999px;font-size:13px;cursor:pointer;transition:.15s;font-family:var(--sans);box-shadow:0 2px 10px rgba(84,160,125,.3);}
+  .btn-primary{border:0;background:var(--accent);color:#fff;padding:8px 17px;border-radius:999px;font-size:13px;cursor:pointer;transition:.15s;font-family:var(--sans);box-shadow:0 2px 10px rgba(92,182,140,.28);display:flex;align-items:center;gap:4px;}
   .btn-primary:hover{background:var(--accent-deep);}
   .view-switch{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px;}
   .view-switch button{border:0;background:transparent;color:var(--ink-soft);font-size:13px;padding:7px 16px;border-radius:999px;cursor:pointer;transition:.15s;font-family:var(--sans);}
-  .view-switch button.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(84,160,125,.3);}
+  .view-switch button.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(92,182,140,.28);}
 
-  .main-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;min-height:480px;}
+  .main-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;min-height:480px;}
 
   .section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
   .section-title h2{margin:0;font-size:16px;font-weight:600;letter-spacing:.5px;}
@@ -87,24 +88,23 @@
   .add-row button:hover{background:var(--accent-deep);}
 
   .todo-list{padding:2px 2px 8px;}
-  .day-group{margin-bottom:14px;}
+  .day-group{margin-bottom:16px;}
   .day-group:last-child{margin-bottom:0;}
-  .day-head{display:flex;align-items:center;gap:10px;padding:6px 10px;margin:4px 0 2px;position:sticky;top:0;background:var(--bg-card);z-index:2;}
+  .day-head{display:flex;align-items:center;gap:10px;padding:6px 10px;margin:4px 0 2px;position:sticky;top:0;background:rgba(246,247,249,.92);backdrop-filter:blur(4px);z-index:2;border-radius:10px;}
   .day-d{font-size:14px;font-weight:700;color:var(--ink);}
   .day-w{font-size:12px;color:var(--ink-faint);}
   .day-cnt{margin-left:auto;font-size:11.5px;color:var(--ink-faint);background:var(--line-soft);padding:2px 9px;border-radius:20px;}
-  .todo-item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-radius:12px;transition:.15s;}
+  .todo-item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-radius:12px;transition:.15s;background:#fff;border:1px solid var(--line-soft);margin-bottom:6px;}
   .todo-item:hover{background:var(--line-soft);}
-  .todo-item + .todo-item{border-top:1px solid var(--line);border-radius:0;}
-  .todo-item + .todo-item:hover{border-radius:12px;}
-  .chk{width:22px;height:22px;border-radius:7px;border:2px solid var(--ink-faint);flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;background:#fff;}
+  .todo-item.done{background:var(--line-soft);}
+  .chk{width:20px;height:20px;border-radius:50%;border:1.8px solid var(--ink-faint);flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;background:#fff;}
   .chk:hover{border-color:var(--accent);}
   .chk.done{background:var(--accent);border-color:var(--accent);}
   .chk.done svg{display:block;}
-  .chk svg{display:none;}
-  .todo-text{flex:1;font-size:14.5px;line-height:1.45;word-break:break-word;cursor:text;}
+  .chk svg{display:none;width:11px;height:11px;}
+  .todo-text{flex:1;font-size:14px;line-height:1.45;word-break:break-word;cursor:text;}
   .todo-item.done .todo-text{color:var(--ink-faint);text-decoration:line-through;}
-  .cat-chip{flex:0 0 auto;font-size:11px;padding:4px 11px;border-radius:999px;font-family:var(--sans);white-space:nowrap;border:1px solid transparent;-webkit-appearance:none;appearance:none;font-weight:600;cursor:pointer;outline:none;background:transparent;}
+  .cat-chip{flex:0 0 auto;font-size:11px;padding:3px 10px;border-radius:999px;font-family:var(--sans);white-space:nowrap;border:1px solid transparent;-webkit-appearance:none;appearance:none;font-weight:600;cursor:pointer;outline:none;background:transparent;}
   .todo-edit-btn{flex:0 0 auto;border:0;background:transparent;color:var(--ink-faint);font-size:13px;cursor:pointer;padding:5px 8px;border-radius:8px;transition:.15s;font-family:var(--sans);}
   .todo-edit-btn:hover{background:var(--line-soft);color:var(--ink);}
   .todo-del-btn{flex:0 0 auto;border:0;background:transparent;color:var(--ink-faint);font-size:13px;cursor:pointer;padding:5px 8px;border-radius:8px;transition:.15s;font-family:var(--sans);display:flex;align-items:center;gap:4px;}
@@ -119,41 +119,36 @@
   .empty{padding:46px 18px;text-align:center;color:var(--ink-faint);font-size:13.5px;line-height:1.8;}
   .empty .big{font-size:32px;margin-bottom:8px;opacity:.5;}
 
-  /* ===== 月历 ===== */
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;}
-  .cal-dow{text-align:center;font-size:12.5px;color:var(--ink-faint);padding:4px 0;font-weight:500;}
-  .cal-cell{position:relative;min-height:120px;border-radius:14px;border:1px solid var(--line);background:var(--line-soft);display:flex;flex-direction:column;padding:9px 9px 8px;transition:.15s;cursor:pointer;}
-  .cal-cell:hover{border-color:var(--accent);}
-  .cal-cell.other{background:#fafafb;color:var(--ink-faint);opacity:.55;}
-  .cal-cell.today{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);}
-  .cal-cell.sel{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .cal-cell.sel .cell-lun{color:rgba(255,255,255,.8);}
-  .cal-cell.sel .ci-text{color:#fff;}
-  .cal-cell.sel .ci-cat{background:rgba(255,255,255,.22);color:#fff;}
-  .cell-head{display:flex;align-items:flex-start;justify-content:space-between;}
-  .cell-num{font-size:15px;font-weight:600;line-height:1;}
-  .cell-add{width:22px;height:22px;border-radius:7px;border:1px solid var(--line);background:#fff;color:var(--ink-faint);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;flex:0 0 auto;}
-  .cell-add:hover{border-color:var(--accent);color:var(--accent-deep);}
-  .cal-cell.sel .cell-add{border-color:rgba(255,255,255,.5);color:#fff;background:rgba(255,255,255,.15);}
-  .cell-lun{font-size:10.5px;color:var(--ink-faint);margin-top:3px;font-family:var(--sans);}
-  .cell-items{margin-top:8px;display:flex;flex-direction:column;gap:4px;overflow:hidden;}
-  .ci{display:flex;align-items:center;gap:6px;background:#fff;border-radius:7px;padding:4px 6px;font-size:11.5px;line-height:1.3;cursor:pointer;}
-  .cal-cell.sel .ci{background:rgba(255,255,255,.16);}
-  .ci-chk{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--ink-faint);flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;}
+  /* ===== 月历 & 周历 统一卡片 ===== */
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;}
+  .cal-week{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;}
+  .cal-cell{position:relative;min-height:152px;border-radius:18px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;padding:12px;transition:.15s;cursor:pointer;}
+  .cal-cell:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(92,182,140,.08);}
+  .cal-cell.other{background:var(--line-soft);color:var(--ink-faint);opacity:.6;}
+  .cal-cell.today{border-color:var(--accent);background:linear-gradient(180deg,#fff 0%,#f4fbf7 100%);box-shadow:0 0 0 1px var(--accent-soft),0 4px 14px rgba(92,182,140,.1);}
+  .cal-cell.sel{border-color:var(--accent-deep);background:linear-gradient(180deg,#f6fdf9 0%,#eef7f2 100%);}
+  .cell-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+  .cell-date{display:flex;flex-direction:column;gap:1px;}
+  .cell-dow{font-size:11.5px;color:var(--ink-faint);font-weight:500;}
+  .cell-num{font-size:22px;font-weight:700;line-height:1;color:var(--ink);}
+  .cal-cell.today .cell-num{color:var(--accent-deep);}
+  .cal-cell.sel .cell-num{color:var(--accent-deep);}
+  .cell-add{border:1px dashed var(--line);background:transparent;color:var(--ink-faint);border-radius:8px;padding:4px 9px;font-size:12px;cursor:pointer;transition:.15s;font-family:var(--sans);display:flex;align-items:center;gap:3px;}
+  .cell-add:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-soft);}
+  .cell-body{flex:1;display:flex;flex-direction:column;gap:6px;overflow:hidden;}
+  .cell-empty{color:var(--ink-faint);font-size:12px;text-align:center;margin:auto 0;padding:18px 0;opacity:.7;}
+
+  .ci-card{display:flex;align-items:center;gap:8px;background:var(--line-soft);border-radius:10px;padding:7px 9px;font-size:12px;line-height:1.35;transition:.15s;}
+  .ci-card:hover{background:#e9edea;}
+  .ci-card.done .ci-text{color:var(--ink-faint);text-decoration:line-through;}
+  .ci-chk{width:16px;height:16px;border-radius:50%;border:1.6px solid var(--ink-faint);flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;background:#fff;}
+  .ci-chk:hover{border-color:var(--accent);}
   .ci-chk.done{background:var(--accent);border-color:var(--accent);}
   .ci-chk.done svg{display:block;width:9px;height:9px;}
   .ci-chk svg{display:none;}
-  .ci-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-soft);}
-  .ci.done .ci-text{color:var(--ink-faint);text-decoration:line-through;}
-  .ci-cat{flex:0 0 auto;font-size:10px;padding:1px 6px;border-radius:999px;background:var(--line-soft);color:var(--ink-soft);}
-  .ci-more{font-size:10.5px;color:var(--ink-faint);padding-left:4px;}
-
-  /* ===== 周历 ===== */
-  .cal-week{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;}
-  .cal-week .cal-cell{min-height:150px;}
-  .cal-week .wstat{font-size:10.5px;color:var(--ink-faint);text-align:center;margin-top:6px;}
-  .wadd{margin-top:auto;width:100%;border:1px dashed var(--line);background:transparent;color:var(--ink-faint);border-radius:8px;padding:5px;font-size:12px;cursor:pointer;transition:.15s;font-family:var(--sans);}
-  .wadd:hover{border-color:var(--accent);color:var(--accent-deep);}
+  .ci-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);}
+  .ci-cat{flex:0 0 auto;font-size:10.5px;padding:2px 7px;border-radius:999px;font-weight:600;}
+  .ci-more{font-size:11px;color:var(--ink-faint);text-align:center;padding:2px 0;}
 
   /* ===== 弹窗 ===== */
   .modal-mask{position:fixed;inset:0;background:rgba(30,30,40,.42);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50;backdrop-filter:blur(2px);}
@@ -176,7 +171,8 @@
   .icon-btn:hover{border-color:var(--accent);color:var(--accent-deep);transform:rotate(30deg);}
 
   .hidden{display:none !important;}
-  @media (max-width:880px){
+
+  @media (max-width:900px){
     .wrap{display:flex;flex-direction:column;gap:16px;padding:16px 12px 48px;}
     .left-top{order:1;}
     .main{order:2;}
@@ -184,35 +180,40 @@
     .brand{padding:0 2px 2px;}
     .brand-title{font-size:18px;}
     .brand-sub{font-size:11.5px;}
-    .date-card{padding:16px 18px;}
-    .dc-date{font-size:38px;}
-    .main-head{gap:10px;margin-bottom:12px;}
-    .mnav{flex:1;}
-    .mtitle{min-width:0;font-size:16px;flex:1;text-align:left;}
-    .mtools{width:100%;gap:8px;}
+    .date-card{padding:18px 18px 16px;}
+    .dc-date{font-size:40px;}
+    .main-head{gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+    .mnav{flex:1;min-width:0;}
+    .mtitle{min-width:0;font-size:15px;flex:1;text-align:center;}
+    .mtools{width:100%;gap:8px;justify-content:space-between;}
+    .btn-primary,.btn-ghost{padding:8px 12px;font-size:12px;}
     .view-switch{flex:1;}
-    .view-switch button{flex:1;text-align:center;padding:8px 4px;}
-    .main-card{min-height:auto;padding:14px;border-radius:14px;}
+    .view-switch button{flex:1;text-align:center;padding:8px 4px;font-size:12px;}
+    .main-card{min-height:auto;padding:14px;border-radius:16px;}
     .section-title .meta{display:none;}
     .add-row{flex-wrap:wrap;}
     .add-row input{flex:1 1 100%;}
     .add-row .cat-sel{flex:1;padding:11px 10px;}
     .add-row button{flex:1;padding:12px 20px;}
-    /* 月历：保留 7 列，紧凑化 */
+
+    /* 月历：紧凑但仍保留7列 */
     .cal-grid{gap:5px;}
-    .cal-dow{font-size:11px;}
-    .cal-cell{min-height:82px;padding:6px 5px 5px;border-radius:11px;}
-    .cell-num{font-size:13px;}
-    .cell-lun{font-size:9px;margin-top:2px;}
-    .cell-items{gap:3px;margin-top:5px;}
-    .ci{font-size:9.5px;padding:3px 4px;border-radius:6px;gap:4px;}
-    .cal-grid .ci-cat{display:none;}
-    .cell-add{width:18px;height:18px;font-size:11px;border-radius:6px;}
-    .ci-more{font-size:9.5px;}
-    /* 周历：横向滑动查看 7 天 */
+    .cal-cell{min-height:78px;padding:6px 5px 5px;border-radius:11px;}
+    .cell-dow{font-size:10px;}
+    .cell-num{font-size:15px;}
+    .cell-add{padding:2px 5px;font-size:10px;}
+    .cell-body{gap:3px;}
+    .ci-card{padding:4px 5px;font-size:10px;border-radius:6px;gap:4px;}
+    .ci-chk{width:13px;height:13px;}
+    .ci-chk.done svg{width:7px;height:7px;}
+    .ci-cat{font-size:9px;padding:1px 4px;}
+    .cell-empty{font-size:10px;padding:8px 0;}
+    .ci-more{font-size:9px;}
+
+    /* 周历：横向滑动 */
     .cal-week{display:flex;overflow-x:auto;gap:8px;padding-bottom:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;}
     .cal-week .cal-cell{min-width:148px;min-height:auto;scroll-snap-align:start;}
-    /* 清单 */
+
     .day-head{top:0;}
     .todo-item{padding:13px 4px;}
   }
@@ -265,7 +266,7 @@
     <div class="main-card">
       <!-- 清单视图 -->
       <div id="listView">
-        <div class="section-title"><h2 id="listTitle">今日待办</h2><span class="meta" id="listMeta"></span></div>
+        <div class="section-title"><h2 id="listTitle">待办清单</h2><span class="meta" id="listMeta"></span></div>
         <div class="filterbar" id="filterBar"></div>
         <div class="add-box">
           <div class="add-row">
@@ -281,8 +282,7 @@
 
       <!-- 月历视图 -->
       <div id="monthView" class="hidden">
-        <div class="section-title"><h2 id="monthTitle">月历</h2><span class="meta">点击日期查看 / 编辑当天待办 · 右上「＋」快速新增</span></div>
-        <div class="cal-grid" id="monthDow" style="margin-bottom:10px;"></div>
+        <div class="section-title"><h2 id="monthTitle">月历</h2><span class="meta">点击日期查看 / 编辑当天待办</span></div>
         <div class="cal-grid" id="monthGrid"></div>
       </div>
 
@@ -326,7 +326,7 @@
     </div>
     <div class="modal-body" style="padding:16px 18px 20px;">
       <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin:0 0 12px;">
-        在此填入<b>同步服务根地址</b>（即运行 server.js 的地址，打开它会返回 <code style="background:var(--line-soft);padding:1px 4px;border-radius:4px;">{"rev":0,"data":{}}</code> 这类 JSON，<b>不是网页前台地址</b>）。<br>
+        在此填入<b>同步服务根地址</b>（即运行 server.js 的地址，打开它会返回 <code style="background:var(--line-soft);padding:1px 4px;border-radius:4px;">{&quot;rev&quot;:0,&quot;data&quot;:{}}</code> 这类 JSON，<b>不是网页前台地址</b>）。<br>
         手机与电脑都打开同一网页、填同一个地址，即可自动同步。<br>
         留空＝只用本机存储（不跨设备）。
       </p>
@@ -480,34 +480,17 @@ function clearDoneAll(){
 /* ===== 黄历 ===== */
 function renderAlmanac(d){
   const solar=Solar.fromDate(d), lunar=solar.getLunar();
-  const sxz=lunar.getYearShengXiao();
-  const mGz=lunar.getMonthInGanZhi(), dGz=lunar.getDayInGanZhi();
-  const yi=lunar.getDayYi().join(" "), ji=lunar.getDayJi().join(" ");
-  const chong=lunar.getDayChong(), sha=lunar.getDaySha();
-  const tianshen=lunar.getDayTianShen(), nayin=lunar.getDayNaYin();
-  const pz=lunar.getPengZuGan()+" "+lunar.getPengZuZhi();
-  const jq=lunar.getJieQi()||"";
-  const fest=(lunar.getFestivals().concat(lunar.getOtherFestivals())).join(" ");
-  const sfest=(solar.getFestivals&&solar.getFestivals())||[];
-  const lunarStr=lunar.getYearInChinese()+"年 "+lunar.getMonthInChinese()+"月"+lunar.getDayInChinese();
-  let festLine="";
-  if(jq) festLine+="【"+jq+"】";
-  if(fest) festLine+=fest;
-  if(sfest.length) festLine+=sfest.join(" ");
+  const yi=lunar.getDayYi().join("、")||"—";
+  const ji=lunar.getDayJi().join("、")||"—";
   $("#almBox").innerHTML=`
-    <div class="alm-row"><span class="alm-k">农历</span><span>${lunarStr}<br><span style="color:var(--ink-faint)">${mGz}月 ${dGz}日</span></span></div>
-    ${festLine?`<div class="alm-row"><span class="alm-k">节日</span><span style="color:var(--warn)">${festLine}</span></div>`:""}
-    <div class="alm-row"><span class="alm-k">宜</span><span class="yi">${yi||"—"}</span></div>
-    <div class="alm-row"><span class="alm-k">忌</span><span class="ji">${ji||"—"}</span></div>
-    <div class="alm-row"><span class="alm-k">冲煞</span><span>冲${chong}煞${sha}</span></div>
-    <div class="alm-row"><span class="alm-k">值神</span><span>${tianshen} · 纳音${nayin}</span></div>
-    <div class="alm-note">彭祖百忌：${pz}</div>`;
+    <div class="alm-row"><span class="alm-k yi">宜</span><span class="yi-text">${yi}</span></div>
+    <div class="alm-row"><span class="alm-k ji">忌</span><span class="ji-text">${ji}</span></div>`;
 }
 
 /* ===== 工具 ===== */
 function isSameDay(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
-function escapeHtml(s){ return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function checkSvg(){ return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`; }
+function escapeHtml(s){ return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+function checkSvg(){ return `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`; }
 function trashSvg(){ return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`; }
 function catOpts(cur){ return CAT_KEYS.map(k=>`<option value="${k}" ${k===cur?"selected":""}>${CATS[k].label}</option>`).join(""); }
 
@@ -606,11 +589,11 @@ function renderList(){
 
 /* ===== 左侧 sidebar 渲染 ===== */
 function renderSidebar(){
-  const d=selected, today=new Date(); today.setHours(0,0,0,0);
+  const today=new Date(); today.setHours(0,0,0,0);
+  const d=today;
   const lun=Solar.fromDate(d).getLunar();
-  const isT=isSameDay(d,today);
   $("#dateCard").innerHTML=`<div class="dc-date">${d.getMonth()+1}/${d.getDate()}</div>
-    <div class="dc-info">星期${WEEK_CN[d.getDay()]}${isT?" · 今天":""} · ${d.getFullYear()}年</div>
+    <div class="dc-info">星期${WEEK_CN[d.getDay()]} · ${d.getFullYear()}年</div>
     <div class="dc-lunar">农历：${lun.getMonthInChinese()}月${lun.getDayInChinese()}</div>`;
   renderCatStats();
   renderAlmanac(d);
@@ -625,17 +608,27 @@ function renderCatStats(){
   }).join("");
 }
 
-/* ===== 日历通用 ===== */
-function statHTML(list){
-  const total=list.length, done=list.filter(t=>t.done).length, pend=total-done;
-  if(!total) return "";
-  return `<div class="cellstat" style="margin-top:auto;font-size:10px;color:var(--ink-faint)">${pend?`待${pend}`:""}${done?` ✓${done}`:""}</div>`;
+/* ===== 日历通用：待办卡片 ===== */
+function buildCICards(list, max){
+  if(!list.length) return `<div class="cell-empty">暂无事项</div>`;
+  let html="";
+  list.slice(0,max).forEach(t=>{
+    const c=CATS[t.cat]||CATS.other;
+    html+=`<div class="ci-card ${t.done?"done":""}" data-id="${t.id}">
+      <span class="ci-chk ${t.done?"done":""}" data-act="toggle-ci">${checkSvg()}</span>
+      <span class="ci-text">${escapeHtml(t.text)}</span>
+      <span class="ci-cat" style="background:${c.bg};color:${c.color}">${c.label}</span>
+    </div>`;
+  });
+  if(list.length>max) html+=`<div class="ci-more">+${list.length-max} 项</div>`;
+  return html;
 }
+
+/* ===== 月历 ===== */
 function renderMonth(){
   const y=selected.getFullYear(), m=selected.getMonth();
   $("#monthTitle").textContent=y+"年"+(m+1)+"月";
   $("#curTitle").textContent=y+"年"+(m+1)+"月";
-  $("#monthDow").innerHTML=DOW_CN.map(w=>`<div class="cal-dow">周${w}</div>`).join("");
   const first=new Date(y,m,1);
   const start=new Date(y,m,1); start.setDate(1-((first.getDay()+6)%7));
   const today=new Date(); today.setHours(0,0,0,0);
@@ -649,57 +642,45 @@ function renderMonth(){
     if(isSameDay(d,selected)) cell.classList.add("sel");
     const lun=Solar.fromDate(d).getLunar();
     const lunTxt=lun.getDay()===1? lun.getMonthInChinese()+"月" : lun.getDayInChinese();
-    let items="";
-    list.slice(0,3).forEach(t=>{
-      const c=CATS[t.cat]||CATS.other;
-      items+=`<div class="ci ${t.done?"done":""}" data-id="${t.id}">
-        <span class="ci-chk ${t.done?"done":""}" data-act="toggle-ci"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-        <span class="ci-text">${escapeHtml(t.text)}</span>
-        <span class="ci-cat" style="background:${c.bg};color:${c.color}">${c.label}</span>
-      </div>`;
-    });
-    if(list.length>3) items+=`<div class="ci-more">+${list.length-3} 项</div>`;
-    cell.innerHTML=`<div class="cell-head"><span class="cell-num">${d.getDate()}</span><button class="cell-add" data-act="add" title="新增">＋</button></div>
-      <div class="cell-lun">${lunTxt}</div>
-      <div class="cell-items">${items}</div>`;
+    cell.innerHTML=`<div class="cell-top">
+        <div class="cell-date"><span class="cell-dow">周${DOW_CN[(d.getDay()+6)%7]}</span><span class="cell-num">${d.getDate()}</span></div>
+        <button class="cell-add" data-act="add">＋ 新增</button>
+      </div>
+      <div class="cell-body">${buildCICards(list,3)}</div>`;
     cell.addEventListener("click",e=>{
-      if(e.target.closest(".cell-add")){ openModal(d,true); return; }
-      const ci=e.target.closest(".ci");
-      if(ci){
-        if(e.target.closest('[data-act="toggle-ci"]')){ toggleTodo(ci.dataset.id,key); return; }
-        openModal(d); return;
-      }
+      if(e.target.closest('[data-act="add"]')){ openModal(d,true); return; }
+      const ci=e.target.closest(".ci-card");
+      if(ci){ if(e.target.closest('[data-act="toggle-ci"]')){ toggleTodo(ci.dataset.id,key); return; } openModal(d); return; }
       openModal(d);
     });
     grid.appendChild(cell);
   }
 }
+
+/* ===== 周历 ===== */
 function renderWeek(){
   const monday=new Date(selected); monday.setDate(selected.getDate()-((selected.getDay()+6)%7));
-  $("#weekTitle").textContent=fmtKey(monday).slice(5)+" ~ "+fmtKey(new Date(monday.getTime()+6*864e5)).slice(5);
+  const sun=new Date(monday.getTime()+6*864e5);
+  $("#weekTitle").textContent=fmtKey(monday).slice(5).replace("-","/")+" - "+fmtKey(sun).slice(5).replace("-","/");
   $("#curTitle").textContent=fmtKey(monday).slice(0,7).replace("-","年")+"月";
   const grid=$("#weekGrid"); grid.innerHTML="";
+  const today=new Date(); today.setHours(0,0,0,0);
   for(let i=0;i<7;i++){
     const d=new Date(monday); d.setDate(monday.getDate()+i);
     const key=fmtKey(d), list=getDayTodos(key);
-    const total=list.length, done=list.filter(t=>t.done).length;
     const cell=document.createElement("div"); cell.className="cal-cell";
-    const today=new Date(); today.setHours(0,0,0,0);
     if(isSameDay(d,today)) cell.classList.add("today");
     if(isSameDay(d,selected)) cell.classList.add("sel");
     const lun=Solar.fromDate(d).getLunar();
     const lunTxt=lun.getDay()===1? lun.getMonthInChinese()+"月" : lun.getDayInChinese();
-    let items="";
-    list.slice(0,4).forEach(t=>{ const c=CATS[t.cat]||CATS.other; items+=`<div class="ci ${t.done?"done":""}" data-id="${t.id}"><span class="ci-chk ${t.done?"done":""}" data-act="toggle-ci"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span class="ci-text">${escapeHtml(t.text)}</span></div>`; });
-    if(total>4) items+=`<div class="ci-more">+${total-4} 项</div>`;
-    cell.innerHTML=`<div class="cell-head"><span class="cell-num">${d.getDate()}</span><button class="cell-add" data-act="add">＋</button></div>
-      <div class="cell-lun">周${DOW_CN[i]}·${lunTxt}</div>
-      <div class="cell-items">${items}</div>
-      ${total?`<div class="wstat">待${total-done} · 已完成${done}</div>`:""}
-      <button class="wadd" data-act="add">＋ 添加</button>`;
+    cell.innerHTML=`<div class="cell-top">
+        <div class="cell-date"><span class="cell-dow">周${DOW_CN[i]}</span><span class="cell-num">${d.getDate()}</span></div>
+        <button class="cell-add" data-act="add">＋ 新增</button>
+      </div>
+      <div class="cell-body">${buildCICards(list,4)}</div>`;
     cell.addEventListener("click",e=>{
       if(e.target.closest('[data-act="add"]')){ openModal(d,true); return; }
-      const ci=e.target.closest(".ci");
+      const ci=e.target.closest(".ci-card");
       if(ci){ if(e.target.closest('[data-act="toggle-ci"]')){ toggleTodo(ci.dataset.id,key); return; } openModal(d); return; }
       openModal(d);
     });
