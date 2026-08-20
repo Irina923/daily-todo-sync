@@ -39,6 +39,7 @@
   .cat-list{display:flex;flex-direction:column;gap:4px;}
   .cat-row{display:flex;align-items:center;gap:10px;padding:9px 5px;border-radius:12px;cursor:pointer;transition:.15s;}
   .cat-row:hover{background:var(--line-soft);}
+  .cat-row.active{background:var(--accent-soft);}
   .cat-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;}
   .cat-name{font-size:14px;color:var(--ink);flex:1;}
   .cat-num{font-size:13px;color:var(--ink-faint);font-variant-numeric:tabular-nums;min-width:18px;text-align:right;}
@@ -149,6 +150,23 @@
   .ci-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);}
   .ci-cat{flex:0 0 auto;font-size:10.5px;padding:2px 7px;border-radius:999px;font-weight:600;}
   .ci-more{font-size:11px;color:var(--ink-faint);text-align:center;padding:2px 0;}
+  .ci-del{border:0;background:transparent;color:var(--ink-faint);width:18px;height:18px;border-radius:6px;flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;padding:0;}
+  .ci-del:hover{background:var(--warn-soft);color:var(--warn);}
+  .ci-del svg{display:block;}
+
+  /* 清单顶部：聚焦日期 + 黄历 + 分类 */
+  .list-top{position:sticky;top:0;z-index:3;background:rgba(246,247,249,.94);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(20,20,40,.04);}
+  .lt-main{display:flex;align-items:center;gap:16px;}
+  .lt-date{flex:0 0 auto;}
+  .lt-big{font-size:22px;font-weight:700;color:var(--accent-deep);line-height:1.1;}
+  .lt-sub{font-size:12px;color:var(--ink-soft);margin-top:3px;}
+  .lt-alm{flex:1;min-width:0;font-size:12.5px;line-height:1.7;color:var(--ink-soft);border-left:1px solid var(--line);padding-left:16px;}
+  .lt-cats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .lt-cat{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;transition:.15s;font-family:var(--sans);}
+  .lt-cat:hover{border-color:var(--accent);color:var(--accent-deep);}
+  .lt-cat.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .lt-cat b{font-weight:700;font-variant-numeric:tabular-nums;}
+  .lt-cat .cat-dot{width:7px;height:7px;border-radius:50%;}
 
   /* ===== 弹窗 ===== */
   .modal-mask{position:fixed;inset:0;background:rgba(30,30,40,.42);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50;backdrop-filter:blur(2px);}
@@ -216,6 +234,15 @@
 
     .day-head{top:0;}
     .todo-item{padding:13px 4px;}
+
+    /* 清单顶部在手机端堆叠 */
+    .list-top{top:0;}
+    .lt-main{flex-direction:column;align-items:flex-start;gap:4px;}
+    .lt-alm{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:6px;width:100%;}
+    .lt-big{font-size:19px;}
+    .ci-del{width:16px;height:16px;}
+    /* 月历窄格隐藏分类pill，保留删除按钮 */
+    .cal-grid .ci-cat{display:none;}
   }
 </style>
 </head>
@@ -235,7 +262,7 @@
       <div class="cat-list" id="catList"></div>
     </div>
     <div class="side-block">
-      <div class="sb-title">今日黄历</div>
+      <div class="sb-title" id="almTitle">今日黄历</div>
       <div class="alm-box" id="almBox"></div>
     </div>
   </aside>
@@ -266,8 +293,14 @@
     <div class="main-card">
       <!-- 清单视图 -->
       <div id="listView">
+        <div class="list-top" id="listTop">
+          <div class="lt-main">
+            <div class="lt-date"><div class="lt-big" id="ltBig"></div><div class="lt-sub" id="ltSub"></div></div>
+            <div class="lt-alm" id="ltAlm"></div>
+          </div>
+          <div class="lt-cats" id="ltCats"></div>
+        </div>
         <div class="section-title"><h2 id="listTitle">待办清单</h2><span class="meta" id="listMeta"></span></div>
-        <div class="filterbar" id="filterBar"></div>
         <div class="add-box">
           <div class="add-row">
             <input id="todoInput" type="text" placeholder="添加一件待办，回车保存…" maxlength="120" />
@@ -282,7 +315,7 @@
 
       <!-- 月历视图 -->
       <div id="monthView" class="hidden">
-        <div class="section-title"><h2 id="monthTitle">月历</h2><span class="meta">点击日期查看 / 编辑当天待办</span></div>
+        <div class="section-title"><h2 id="monthTitle">月历</h2><span class="meta">点击日期查看当日黄历 · 点事项可编辑</span></div>
         <div class="cal-grid" id="monthGrid"></div>
       </div>
 
@@ -477,14 +510,28 @@ function clearDoneAll(){
   afterMutate(); render();
 }
 
-/* ===== 黄历 ===== */
-function renderAlmanac(d){
-  const solar=Solar.fromDate(d), lunar=solar.getLunar();
+/* ===== 当前聚焦日期：日期卡 + 黄历 + 分类（跟随 selected） ===== */
+function almHtml(d){
+  const lunar=Solar.fromDate(d).getLunar();
   const yi=lunar.getDayYi().join("、")||"—";
   const ji=lunar.getDayJi().join("、")||"—";
-  $("#almBox").innerHTML=`
-    <div class="alm-row"><span class="alm-k yi">宜</span><span class="yi-text">${yi}</span></div>
+  return `<div class="alm-row"><span class="alm-k yi">宜</span><span class="yi-text">${yi}</span></div>
     <div class="alm-row"><span class="alm-k ji">忌</span><span class="ji-text">${ji}</span></div>`;
+}
+function renderContext(){
+  const d=selected, now=new Date(); now.setHours(0,0,0,0);
+  const isT=isSameDay(d,now);
+  const lun=Solar.fromDate(d).getLunar();
+  $("#dateCard").innerHTML=`<div class="dc-date">${d.getMonth()+1}/${d.getDate()}</div>
+    <div class="dc-info">星期${WEEK_CN[d.getDay()]} · ${d.getFullYear()}年${isT?" · 今天":""}</div>
+    <div class="dc-lunar">农历：${lun.getMonthInChinese()}月${lun.getDayInChinese()}</div>`;
+  const html=almHtml(d);
+  const almBox=$("#almBox"); if(almBox) almBox.innerHTML=html;
+  const almTitle=$("#almTitle"); if(almTitle) almTitle.textContent=isT?"今日黄历":`${d.getMonth()+1}月${d.getDate()}日 黄历`;
+  const ltBig=$("#ltBig"); if(ltBig) ltBig.textContent=`${d.getMonth()+1}月${d.getDate()}日`;
+  const ltSub=$("#ltSub"); if(ltSub) ltSub.textContent=`星期${WEEK_CN[d.getDay()]} · 农历${lun.getMonthInChinese()}月${lun.getDayInChinese()}${isT?" · 今天":""}`;
+  const ltAlm=$("#ltAlm"); if(ltAlm) ltAlm.innerHTML=html;
+  renderCatStats();
 }
 
 /* ===== 工具 ===== */
@@ -511,8 +558,11 @@ function buildTodoHTML(list,key){
 function bindList(containerId){
   const c=$("#"+containerId);
   c.addEventListener("click",e=>{
+    const head=e.target.closest(".day-head");
+    if(head){ const ds=head.dataset.date; if(ds) selectDate(new Date(ds+"T00:00:00")); return; }
     const item=e.target.closest(".todo-item"); if(!item) return;
     const id=item.dataset.id, key=item.dataset.key, act=e.target.dataset.act;
+    if(key!==fmtKey(selected)) selectDate(new Date(key+"T00:00:00"));
     if(act==="toggle") toggleTodo(id,key);
     else if(act==="del") delTodo(id,key);
     else if(act==="edit"){
@@ -544,14 +594,6 @@ function startEdit(item,txt){
 }
 
 /* ===== 列表（清单）视图 ===== */
-function renderFilterBar(){
-  const bar=$("#filterBar");
-  const items=[["all","全部"]].concat(CAT_KEYS.map(k=>[k,CATS[k].label]));
-  bar.innerHTML=items.map(([k,l])=>{
-    const dot=k==="all"?"":`<span class="dot" style="background:${CATS[k].color}"></span>`;
-    return `<button class="${filterCat===k?"active":""}" data-cat="${k}">${dot}${l}</button>`;
-  }).join("");
-}
 function renderList(){
   const all=loadAll();
   const groups=[];
@@ -581,31 +623,30 @@ function renderList(){
     const isT=isSameDay(g.date,new Date());
     const cnt=g.items.length, dc=g.items.filter(t=>t.done).length;
     return `<div class="day-group">
-      <div class="day-head"><span class="day-d">${m}月${d}日</span><span class="day-w">周${w}${isT?" · 今天":""}</span><span class="day-cnt">${dc}/${cnt}</span></div>
+      <div class="day-head" data-date="${g.key}"><span class="day-d">${m}月${d}日</span><span class="day-w">周${w}${isT?" · 今天":""}</span><span class="day-cnt">${dc}/${cnt}</span></div>
       ${buildTodoHTML(g.items,g.key)}
     </div>`;
   }).join("");
 }
 
 /* ===== 左侧 sidebar 渲染 ===== */
-function renderSidebar(){
-  const today=new Date(); today.setHours(0,0,0,0);
-  const d=today;
-  const lun=Solar.fromDate(d).getLunar();
-  $("#dateCard").innerHTML=`<div class="dc-date">${d.getMonth()+1}/${d.getDate()}</div>
-    <div class="dc-info">星期${WEEK_CN[d.getDay()]} · ${d.getFullYear()}年</div>
-    <div class="dc-lunar">农历：${lun.getMonthInChinese()}月${lun.getDayInChinese()}</div>`;
-  renderCatStats();
-  renderAlmanac(d);
-}
+function renderSidebar(){ renderContext(); }
 function renderCatStats(){
   const all=loadAll();
   const counts={}; CAT_KEYS.forEach(k=>counts[k]=0);
-  Object.values(all).forEach(arr=>arr.forEach(t=>{ if(!t.deleted && counts[t.cat]!==undefined) counts[t.cat]++; }));
+  let total=0;
+  Object.values(all).forEach(arr=>arr.forEach(t=>{ if(!t.deleted && counts[t.cat]!==undefined){ counts[t.cat]++; total++; } }));
   $("#catList").innerHTML=CAT_KEYS.map(k=>{
     const c=CATS[k];
-    return `<div class="cat-row" data-cat="${k}"><span class="cat-dot" style="background:${c.color}"></span><span class="cat-name">${c.label}</span><span class="cat-num">${counts[k]}</span></div>`;
+    return `<div class="cat-row ${filterCat===k?"active":""}" data-cat="${k}"><span class="cat-dot" style="background:${c.color}"></span><span class="cat-name">${c.label}</span><span class="cat-num">${counts[k]}</span></div>`;
   }).join("");
+  const lt=$("#ltCats");
+  if(lt){
+    lt.innerHTML=`<div class="lt-cat ${filterCat==="all"?"active":""}" data-cat="all">全部 <b>${total}</b></div>`+CAT_KEYS.map(k=>{
+      const c=CATS[k];
+      return `<div class="lt-cat ${filterCat===k?"active":""}" data-cat="${k}"><span class="cat-dot" style="background:${c.color}"></span>${c.label} <b>${counts[k]}</b></div>`;
+    }).join("");
+  }
 }
 
 /* ===== 日历通用：待办卡片 ===== */
@@ -618,6 +659,7 @@ function buildCICards(list, max){
       <span class="ci-chk ${t.done?"done":""}" data-act="toggle-ci">${checkSvg()}</span>
       <span class="ci-text">${escapeHtml(t.text)}</span>
       <span class="ci-cat" style="background:${c.bg};color:${c.color}">${c.label}</span>
+      <button class="ci-del" data-act="del-ci" title="删除">${trashSvg()}</button>
     </div>`;
   });
   if(list.length>max) html+=`<div class="ci-more">+${list.length-max} 项</div>`;
@@ -650,8 +692,12 @@ function renderMonth(){
     cell.addEventListener("click",e=>{
       if(e.target.closest('[data-act="add"]')){ openModal(d,true); return; }
       const ci=e.target.closest(".ci-card");
-      if(ci){ if(e.target.closest('[data-act="toggle-ci"]')){ toggleTodo(ci.dataset.id,key); return; } openModal(d); return; }
-      openModal(d);
+      if(ci){
+        if(e.target.closest('[data-act="toggle-ci"]')){ toggleTodo(ci.dataset.id,key); return; }
+        if(e.target.closest('[data-act="del-ci"]')){ delTodo(ci.dataset.id,key); return; }
+        openModal(d); return;
+      }
+      selectDate(d);
     });
     grid.appendChild(cell);
   }
@@ -681,8 +727,12 @@ function renderWeek(){
     cell.addEventListener("click",e=>{
       if(e.target.closest('[data-act="add"]')){ openModal(d,true); return; }
       const ci=e.target.closest(".ci-card");
-      if(ci){ if(e.target.closest('[data-act="toggle-ci"]')){ toggleTodo(ci.dataset.id,key); return; } openModal(d); return; }
-      openModal(d);
+      if(ci){
+        if(e.target.closest('[data-act="toggle-ci"]')){ toggleTodo(ci.dataset.id,key); return; }
+        if(e.target.closest('[data-act="del-ci"]')){ delTodo(ci.dataset.id,key); return; }
+        openModal(d); return;
+      }
+      selectDate(d);
     });
     grid.appendChild(cell);
   }
@@ -729,6 +779,11 @@ function shiftDate(n){
   else selected=new Date(selected.getTime()+n*864e5);
   render();
 }
+function selectDate(d){
+  selected=new Date(d); selected.setHours(0,0,0,0);
+  if(viewMode==="list"){ renderContext(); }
+  else { render(); }
+}
 $("#prevBtn").addEventListener("click",()=>shiftDate(-1));
 $("#nextBtn").addEventListener("click",()=>shiftDate(1));
 $("#todayBtn").addEventListener("click",()=>{ selected=new Date(); selected.setHours(0,0,0,0); render(); });
@@ -741,8 +796,8 @@ $("#viewSwitch").addEventListener("click",e=>{
 $("#addBtn").addEventListener("click",()=>{ addTodo($("#todoInput").value,fmtKey(new Date()),$("#catSel").value); $("#todoInput").value=""; $("#todoInput").focus(); });
 $("#todoInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){ addTodo($("#todoInput").value,fmtKey(new Date()),$("#catSel").value); $("#todoInput").value=""; }});
 $("#clearDone").addEventListener("click",()=>clearDoneAll());
-$("#filterBar").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return; filterCat=b.dataset.cat; renderFilterBar(); render(); });
-$("#catList").addEventListener("click",e=>{ const r=e.target.closest(".cat-row"); if(!r) return; filterCat=r.dataset.cat; renderFilterBar(); if(viewMode!=="list"){ viewMode="list"; [...$("#viewSwitch").children].forEach(x=>x.classList.toggle("active",x.dataset.view==="list")); } render(); });
+$("#ltCats").addEventListener("click",e=>{ const b=e.target.closest(".lt-cat"); if(!b) return; filterCat=b.dataset.cat; render(); });
+$("#catList").addEventListener("click",e=>{ const r=e.target.closest(".cat-row"); if(!r) return; filterCat=r.dataset.cat; if(viewMode!=="list"){ viewMode="list"; [...$("#viewSwitch").children].forEach(x=>x.classList.toggle("active",x.dataset.view==="list")); } render(); });
 $("#addQuickBtn").addEventListener("click",()=>{
   if(viewMode!=="list"){ viewMode="list"; [...$("#viewSwitch").children].forEach(x=>x.classList.toggle("active",x.dataset.view==="list")); render(); }
   $("#todoInput").focus();
@@ -772,7 +827,6 @@ $("#syncClear").addEventListener("click",()=>{ setSyncBase(""); $("#syncBaseInpu
 bindList("todoList");
 bindList("modalList");
 [["catSel"],["modalCatSel"]].forEach(([id])=>{ $("#"+id).innerHTML=catOpts("other"); });
-renderFilterBar();
 
 /* ===== 启动 ===== */
 setSync("off","离线");
