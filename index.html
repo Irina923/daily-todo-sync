@@ -19,7 +19,7 @@
   html,body{margin:0;padding:0;}
   body{font-family:var(--sans);color:var(--ink);background:var(--bg);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-  .wrap{max-width:1180px;margin:0 auto;padding:28px 24px 70px;display:grid;grid-template-columns:280px 1fr;grid-template-areas:"date main";gap:22px;align-items:start;}
+  .wrap{max-width:1480px;margin:0 auto;padding:28px 24px 70px;display:grid;grid-template-columns:220px 1fr;grid-template-areas:"date main";gap:24px;align-items:start;}
   .left-top{grid-area:date;display:flex;flex-direction:column;gap:14px;}
 
   /* ===== 左侧 sidebar ===== */
@@ -172,7 +172,6 @@
   .lt-date{flex:0 0 auto;}
   .lt-big{font-size:22px;font-weight:700;color:var(--accent-deep);line-height:1.1;}
   .lt-sub{font-size:12px;color:var(--ink-soft);margin-top:3px;}
-  .lt-alm{flex:1;min-width:0;font-size:12.5px;line-height:1.7;color:var(--ink-soft);border-left:1px solid var(--line);padding-left:16px;}
   .lt-cats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
   .lt-cat{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;transition:.15s;font-family:var(--sans);}
   .lt-cat:hover{border-color:var(--accent);color:var(--accent-deep);}
@@ -250,7 +249,6 @@
     /* 清单顶部在手机端堆叠 */
     .list-top{top:0;}
     .lt-main{flex-direction:column;align-items:flex-start;gap:4px;}
-    .lt-alm{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:6px;width:100%;}
     .lt-big{font-size:19px;}
     .ci-del{width:16px;height:16px;}
     /* 月历窄格：显示待办文字，隐藏分类标签 */
@@ -328,7 +326,6 @@
         <div class="list-top" id="listTop">
           <div class="lt-main">
             <div class="lt-date"><div class="lt-big" id="ltBig"></div><div class="lt-sub" id="ltSub"></div></div>
-            <div class="lt-alm" id="ltAlm"></div>
           </div>
           <div class="lt-cats" id="ltCats"></div>
         </div>
@@ -564,7 +561,6 @@ function renderContext(){
   });
   const ltBig=$("#ltBig"); if(ltBig) ltBig.textContent=`${d.getMonth()+1}月${d.getDate()}日`;
   const ltSub=$("#ltSub"); if(ltSub) ltSub.textContent=`星期${WEEK_CN[d.getDay()]} · 农历${lun.getMonthInChinese()}月${lun.getDayInChinese()}${isT?" · 今天":""}`;
-  const ltAlm=$("#ltAlm"); if(ltAlm) ltAlm.innerHTML=html;
   renderCatStats();
 }
 
