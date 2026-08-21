@@ -156,12 +156,11 @@
   .ci-chk.done{background:var(--accent);border-color:var(--accent);}
   .ci-chk.done svg{display:block;width:9px;height:9px;}
   .ci-chk svg{display:none;}
-  .ci-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);}
-  .cal-cell .ci-text{display:none;}
+  .ci-text{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);}
   .cal-cell .ci-card{gap:6px;}
   .ci-cat{flex:0 0 auto;font-size:10.5px;padding:2px 7px;border-radius:999px;font-weight:600;}
-  /* 月历/周历单元格里不显示分类文字，只保留彩色圆点 */
-  .cal-cell .ci-cat{font-size:0;padding:0;width:8px;height:8px;border-radius:50%;}
+  /* 月历/周历单元格里显示待办内容，隐藏分类标签 */
+  .cal-cell .ci-cat{display:none;}
   .ci-more{font-size:11px;color:var(--ink-faint);text-align:center;padding:2px 0;}
   .ci-del{border:0;background:transparent;color:var(--ink-faint);width:18px;height:18px;border-radius:6px;flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;padding:0;}
   .ci-del:hover{background:var(--warn-soft);color:var(--warn);}
@@ -254,10 +253,9 @@
     .lt-alm{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:6px;width:100%;}
     .lt-big{font-size:19px;}
     .ci-del{width:16px;height:16px;}
-    /* 月历窄格：隐藏待办文字，分类标签缩成彩色小圆点 */
+    /* 月历窄格：显示待办文字，隐藏分类标签 */
     .cal-grid .ci-card{gap:3px;}
-    .cal-grid .ci-text{display:none;}
-    .cal-grid .ci-cat{font-size:0;padding:0;width:5px;height:5px;border-radius:50%;}
+    .cal-grid .ci-cat{display:none;}
 
     /* 移动端：分类/黄历沉底，桌面端侧栏隐藏 */
     .sidebar{display:flex;}
@@ -713,7 +711,7 @@ function buildCICards(list, max){
     const c=CATS[t.cat]||CATS.other;
     html+=`<div class="ci-card ${t.done?"done":""}" data-id="${t.id}">
       <span class="ci-chk ${t.done?"done":""}" data-act="toggle-ci">${checkSvg()}</span>
-      <span class="ci-text">${escapeHtml(t.text)}</span>
+      <span class="ci-text" title="${escapeHtml(t.text)}">${escapeHtml(t.text)}</span>
       <span class="ci-cat" style="background:${c.bg};color:${c.color}">${c.label}</span>
       <button class="ci-del" data-act="del-ci" title="删除">${trashSvg()}</button>
     </div>`;
