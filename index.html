@@ -157,6 +157,8 @@
   .ci-chk.done svg{display:block;width:9px;height:9px;}
   .ci-chk svg{display:none;}
   .ci-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);}
+  .cal-cell .ci-text{display:none;}
+  .cal-cell .ci-card{gap:6px;}
   .ci-cat{flex:0 0 auto;font-size:10.5px;padding:2px 7px;border-radius:999px;font-weight:600;}
   .ci-more{font-size:11px;color:var(--ink-faint);text-align:center;padding:2px 0;}
   .ci-del{border:0;background:transparent;color:var(--ink-faint);width:18px;height:18px;border-radius:6px;flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;padding:0;}
@@ -250,8 +252,10 @@
     .lt-alm{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:6px;width:100%;}
     .lt-big{font-size:19px;}
     .ci-del{width:16px;height:16px;}
-    /* 月历窄格隐藏分类pill，保留删除按钮 */
-    .cal-grid .ci-cat{display:none;}
+    /* 月历窄格：隐藏待办文字，分类标签缩成彩色小圆点 */
+    .cal-grid .ci-card{gap:3px;}
+    .cal-grid .ci-text{display:none;}
+    .cal-grid .ci-cat{font-size:0;padding:0;width:5px;height:5px;border-radius:50%;}
 
     /* 移动端：分类/黄历沉底，桌面端侧栏隐藏 */
     .sidebar{display:flex;}
@@ -757,8 +761,9 @@ function renderMonth(){
 function renderWeek(){
   const monday=new Date(selected); monday.setDate(selected.getDate()-((selected.getDay()+6)%7));
   const sun=new Date(monday.getTime()+6*864e5);
-  $("#weekTitle").textContent=fmtKey(monday).slice(5).replace("-","/")+" - "+fmtKey(sun).slice(5).replace("-","/");
-  $("#curTitle").textContent=fmtKey(monday).slice(0,7).replace("-","年")+"月";
+  const range=fmtKey(monday).slice(5).replace("-","/")+" - "+fmtKey(sun).slice(5).replace("-","/");
+  $("#weekTitle").textContent="本周";
+  $("#curTitle").textContent=range;
   const grid=$("#weekGrid"); grid.innerHTML="";
   const today=new Date(); today.setHours(0,0,0,0);
   for(let i=0;i<7;i++){
