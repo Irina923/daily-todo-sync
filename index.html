@@ -160,6 +160,8 @@
   .cal-cell .ci-text{display:none;}
   .cal-cell .ci-card{gap:6px;}
   .ci-cat{flex:0 0 auto;font-size:10.5px;padding:2px 7px;border-radius:999px;font-weight:600;}
+  /* 月历/周历单元格里不显示分类文字，只保留彩色圆点 */
+  .cal-cell .ci-cat{font-size:0;padding:0;width:8px;height:8px;border-radius:50%;}
   .ci-more{font-size:11px;color:var(--ink-faint);text-align:center;padding:2px 0;}
   .ci-del{border:0;background:transparent;color:var(--ink-faint);width:18px;height:18px;border-radius:6px;flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;padding:0;}
   .ci-del:hover{background:var(--warn-soft);color:var(--warn);}
