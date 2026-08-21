@@ -19,8 +19,8 @@
   html,body{margin:0;padding:0;}
   body{font-family:var(--sans);color:var(--ink);background:var(--bg);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-  .wrap{max-width:1480px;margin:0 auto;padding:28px 3cm 70px;display:grid;grid-template-columns:220px 1fr;grid-template-areas:"date main";gap:24px;align-items:start;}
-  .left-top{grid-area:date;display:flex;flex-direction:column;gap:14px;position:sticky;top:28px;}
+  .wrap{max-width:1480px;margin:0 auto;padding:28px 24px 70px;display:grid;grid-template-columns:220px 1fr;grid-template-areas:"date main";gap:24px;align-items:start;}
+  .left-top{grid-area:date;display:flex;flex-direction:column;gap:14px;}
 
   /* ===== 左侧 sidebar ===== */
   .side-sections{display:flex;flex-direction:column;gap:14px;}
@@ -203,7 +203,7 @@
 
   @media (max-width:900px){
     .wrap{display:flex;flex-direction:column;gap:16px;padding:16px 12px 48px;}
-    .left-top{order:1;position:static;top:auto;}
+    .left-top{order:1;}
     .main{order:2;}
     .sidebar{order:3;}
     .brand{padding:0 2px 2px;}
@@ -855,21 +855,6 @@ $("#addQuickBtn").addEventListener("click",()=>{
   if(viewMode!=="list"){ viewMode="list"; [...$("#viewSwitch").children].forEach(x=>x.classList.toggle("active",x.dataset.view==="list")); render(); }
   $("#todoInput").focus();
 });
-
-// 月历/周历：滚轮翻动日期（往后为下一周期），左侧日期/标签/黄历保持不动
-let _wheelAcc=0, _wheelCool=0;
-$(".main-card").addEventListener("wheel",e=>{
-  if(viewMode!=="month" && viewMode!=="week") return;
-  if(!$("#modalMask").classList.contains("hidden")) return;
-  e.preventDefault();
-  const now=Date.now();
-  if(now-_wheelCool<280) return;
-  _wheelAcc+=e.deltaY;
-  if(Math.abs(_wheelAcc)>=50){
-    shiftDate(_wheelAcc>0?1:-1);
-    _wheelAcc=0; _wheelCool=now;
-  }
-},{passive:false});
 
 $("#modalAdd").addEventListener("click",()=>{ addTodo($("#modalInput").value,fmtKey(modalDate),$("#modalCatSel").value); $("#modalInput").value=""; $("#modalInput").focus(); });
 $("#modalInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){ addTodo($("#modalInput").value,fmtKey(modalDate),$("#modalCatSel").value); $("#modalInput").value=""; }});
